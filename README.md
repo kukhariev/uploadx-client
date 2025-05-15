@@ -1,5 +1,8 @@
 # UploadX Client
 
+[![npm version][npm-image]][npm-url]
+<!-- [![commits since latest release][comm-image]][comm-url] -->
+
 A JavaScript client for resumable file uploads with chunking support. Works with [node-uploadx](https://github.com/kukhariev/node-uploadx) server implementation.
 
 ## Features
@@ -305,3 +308,8 @@ This client is specifically designed to work with the [node-uploadx](https://git
 ## License
 
 MIT
+
+[npm-image]: https://img.shields.io/npm/v/@uploadx/client.svg
+[npm-url]: https://www.npmjs.com/package/@uploadx/client
+[comm-image]: https://img.shields.io/github/commits-since/kukhariev/uploadx-client/latest
+[comm-url]: https://github.com/kukhariev/uploadx-client/releases/latest
