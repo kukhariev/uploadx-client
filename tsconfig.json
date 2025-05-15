@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "baseUrl": "./",
+    "rootDir": "./src",
+    "moduleResolution": "node10",
+    "declaration": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "lib": ["es2020", "dom"],
+    "outDir": "./lib"
+  },
+  "paths": {
+    "@uploadx/client": ["src"]
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/__tests__/**"
+  ]
+}

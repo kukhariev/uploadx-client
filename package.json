@@ -1,0 +1,77 @@
+{
+  "name": "@uploadx/client",
+  "version": "0.0.1",
+  "description": "Resumable upload client for browser and Node.js",
+  "type": "commonjs",
+  "main": "lib/index.js",
+  "module": "lib/esm/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/esm/index.js",
+      "require": "./lib/index.js",
+      "browser": "./lib/browser/index.js"
+    }
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "npm run clean && npm run build:cjs && npm run build:esm && npm run build:web",
+    "build:cjs": "tsc -p tsconfig.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:web": "rollup -c",
+    "clean": "rimraf ./lib",
+    "watch": "tsc -b . --watch",
+    "watch:web": "rollup -c --watch",
+    "lint": "biome check --write src examples",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "upload",
+    "resumable",
+    "chunked",
+    "file-upload"
+  ],
+  "author": {
+    "name": "Oleg Kukhariev",
+    "url": "https://github.com/kukhariev"
+  },
+  "repository": {
+    "url": "git+https://github.com/kukhariev/node-uploadx.git"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "bugs": {
+    "url": "https://github.com/kukhariev/node-uploadx/issues"
+  },
+  "license": "MIT",
+  "workspaces": [
+    "examples"
+  ],
+  "dependencies": {
+    "axios": "^1.8.4",
+    "axios-retry": "^4.5.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@types/jest": "^29.5.14",
+    "@types/node": "22.14.1",
+    "jest": "29.7.0",
+    "lint-staged": "15.5.1",
+    "rimraf": "6.0.1",
+    "rollup": "^4.40.0",
+    "ts-jest": "29.3.2",
+    "tsconfig-paths": "4.2.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.8.3"
+  }
+}

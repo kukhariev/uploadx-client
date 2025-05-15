@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node10",
+    "declaration": false,
+    "outDir": "./lib/browser",
+    "lib": ["es2018", "dom"]
+  }
+}

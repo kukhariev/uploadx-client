@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UploadX Client Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>UploadX Client Demo</h1>
+
+    <div class="demo-section">
+      <h2>File Upload</h2>
+      <input
+        type="file"
+        id="fileInput"
+        accept="video/*,image/*,application/pdf"
+      />
+      <div class="button-group">
+        <button id="uploadBtn" class="btn upload-btn">Upload</button>
+        <button id="abortBtn" class="btn abort-btn" disabled>Abort</button>
+        <button id="resumeBtn" class="btn resume-btn" disabled>Resume</button>
+        <button id="deleteBtn" class="btn delete-btn" disabled>Delete</button>
+      </div>
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="status" id="statusText">Select a file to upload</div>
+    </div>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
+    <!-- <script src="/index.min.js"></script> -->
+
+    <script src="/index.bundled.min.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // DOM elements
+        const fileInput = document.getElementById("fileInput");
+        const uploadBtn = document.getElementById("uploadBtn");
+        const abortBtn = document.getElementById("abortBtn");
+        const resumeBtn = document.getElementById("resumeBtn");
+        const deleteBtn = document.getElementById("deleteBtn");
+        const progressBar = document.getElementById("progressBar");
+        const statusText = document.getElementById("statusText");
+
+        // Variables to store state
+        let selectedFile = null;
+        let sessionUrl = null;
+        let abortController = null;
+
+        // Create UploadxClient instance
+        const uploadClient = new UploadxClient({
+          chunkSize: 256 * 1024 * 1024, // 1MB chunks for demonstration
+          retryConfig: {
+            retries: 3,
+          },
+        });
+
+        // Event handlers
+        fileInput.addEventListener("change", (e) => {
+          if (e.target.files.length > 0) {
+            selectedFile = e.target.files[0];
+            updateStatus(`File selected: ${selectedFile.name}`, "pending");
+            uploadBtn.disabled = false;
+            abortBtn.disabled = true;
+            resumeBtn.disabled = true;
+            deleteBtn.disabled = true;
+            progressBar.style.width = "0%";
+          }
+        });
+
+        uploadBtn.addEventListener("click", async () => {
+          if (!selectedFile) return;
+
+          try {
+            // Prepare metadata
+            const metadata = {
+              name: selectedFile.name,
+              mimeType: selectedFile.type || "application/octet-stream",
+              size: selectedFile.size,
+              lastModified: selectedFile.lastModified,
+            };
+
+            // Create abort controller
+            abortController = new AbortController();
+
+            // Update UI
+            updateStatus("Creating upload session...", "uploading");
+            uploadBtn.disabled = true;
+            abortBtn.disabled = false;
+
+            // Create upload session
+            const session = await uploadClient.createUpload(
+              "http://localhost:3002/files",
+              metadata
+            );
+            sessionUrl = session.url;
+
+            updateStatus("Uploading file...", "uploading");
+
+            // Upload file
+            await uploadClient.resumeUpload(
+              sessionUrl,
+              selectedFile,
+              metadata,
+              updateProgress,
+              abortController.signal
+            );
+
+            // Update UI after successful upload
+            updateStatus("Upload completed!", "completed");
+            abortBtn.disabled = true;
+            resumeBtn.disabled = true;
+            deleteBtn.disabled = false;
+          } catch (error) {
+            if (error.name === "AbortError") {
+              updateStatus("Upload cancelled", "aborted");
+              resumeBtn.disabled = false;
+            } else {
+              updateStatus(`Error: ${error.message}`, "error");
+              resumeBtn.disabled = sessionUrl ? false : true;
+            }
+          }
+        });
+
+        abortBtn.addEventListener("click", () => {
+          if (abortController) {
+            abortController.abort();
+            abortBtn.disabled = true;
+            updateStatus("Cancelling upload...", "aborted");
+          }
+        });
+
+        resumeBtn.addEventListener("click", async () => {
+          if (!selectedFile || !sessionUrl) return;
+
+          try {
+            // Prepare metadata
+            const metadata = {
+              name: selectedFile.name,
+              mimeType: selectedFile.type || "application/octet-stream",
+              size: selectedFile.size,
+              lastModified: selectedFile.lastModified,
+            };
+
+            // Create new abort controller
+            abortController = new AbortController();
+
+            // Update UI
+            updateStatus("Resuming upload...", "uploading");
+            resumeBtn.disabled = true;
+            abortBtn.disabled = false;
+
+            // Resume upload
+            await uploadClient.resumeUpload(
+              sessionUrl,
+              selectedFile,
+              metadata,
+              updateProgress,
+              abortController.signal
+            );
+
+            // Update UI after successful upload
+            updateStatus("Upload completed!", "completed");
+            abortBtn.disabled = true;
+            resumeBtn.disabled = true;
+            deleteBtn.disabled = false;
+          } catch (error) {
+            if (error.name === "AbortError") {
+              updateStatus("Upload cancelled", "aborted");
+              resumeBtn.disabled = false;
+            } else {
+              updateStatus(`Error: ${error.message}`, "error");
+              resumeBtn.disabled = false;
+            }
+          }
+        });
+
+        deleteBtn.addEventListener("click", async () => {
+          if (!sessionUrl) return;
+
+          try {
+            updateStatus("Deleting file...", "pending");
+
+            // Delete file
+            await uploadClient.deleteUpload(sessionUrl);
+
+            // Update UI
+            updateStatus("File deleted", "completed");
+            sessionUrl = null;
+            deleteBtn.disabled = true;
+
+            // Reset state
+            if (selectedFile) {
+              uploadBtn.disabled = false;
+            }
+          } catch (error) {
+            updateStatus(`Error deleting: ${error.message}`, "error");
+          }
+        });
+
+        // Helper functions
+        function updateProgress(progress) {
+          const percentage = Math.round(progress * 100);
+          progressBar.style.width = `${percentage}%`;
+          statusText.textContent = `Upload: ${percentage}%`;
+        }
+
+        function updateStatus(message, status) {
+          statusText.textContent = message;
+          statusText.className = "status status-" + status;
+        }
+      });
+    </script>
+  </body>
+</html>
