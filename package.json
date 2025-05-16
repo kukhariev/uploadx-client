@@ -30,6 +30,7 @@
     "prepublishOnly": "npm run build"
   },
   "keywords": [
+    "uploadx",
     "upload",
     "resumable",
     "chunked",
