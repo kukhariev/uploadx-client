@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
-import { basename } from 'node:path';
+import { basename, extname } from 'node:path';
 import { UploadxClient } from '../src';
 
 // Function to calculate MD5 checksum of a file
@@ -17,7 +17,7 @@ async function calculateMD5(filePath: string): Promise<string> {
 
 // Function to get MIME type based on file extension
 function getMimeType(filePath: string): string {
-  const ext = filePath.split('.').pop()?.toLowerCase() || '';
+  const ext = extname(filePath).toLowerCase();
   switch (ext) {
     case 'jpg':
     case 'jpeg':
@@ -52,12 +52,17 @@ async function main() {
     process.exit(1);
   }
 
+  // Get file stats for metadata
+  const stats = await fs.promises.stat(filePath);
+
+  if (stats.isDirectory()) {
+    console.error(`${filePath} is a directory, not a file.`);
+    process.exit(1);
+  }
+
   console.log(`Calculating MD5 checksum for ${filePath}...`);
   const md5Checksum = await calculateMD5(filePath);
   console.log(`MD5 Checksum: ${md5Checksum}`);
-
-  // Get file stats for metadata
-  const stats = await fs.promises.stat(filePath);
 
   // Create a new UploadxClient instance
   const uploadxClient = new UploadxClient({
