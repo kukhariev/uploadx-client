@@ -304,7 +304,7 @@ The repository includes example code to help you get started:
 
 ### Upload Client Example
 
-`examples/client.ts` demonstrates how to upload a file with progress tracking:
+[examples/client.ts](examples/client.ts) demonstrates how to upload a file with progress tracking:
 
 ```bash
 ts-node examples/client.ts /path/to/file.mp4
@@ -312,7 +312,7 @@ ts-node examples/client.ts /path/to/file.mp4
 
 ### Browser Example
 
-The repository includes a browser demo (`examples/browser/index.html`) that shows how to implement resumable uploads in web applications with progress tracking, session management, and upload controls (upload, abort, resume, delete).
+The repository includes a browser demo ([examples/browser/index.html](examples/browser/index.html)) that shows how to implement resumable uploads in web applications with progress tracking, session management, and upload controls (upload, abort, resume, delete).
 
 ## Server Requirements
 
