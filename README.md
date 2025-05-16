@@ -267,7 +267,7 @@ getUploadStatus(
 Deletes an existing upload from the server.
 
 ```typescript
-deleteUpload(url: string): Promise<void>
+deleteUpload(url: string, signal?: AbortSignal): Promise<void>
 ```
 
 ##### `abort`
