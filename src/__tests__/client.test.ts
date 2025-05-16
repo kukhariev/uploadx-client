@@ -384,3 +384,99 @@ describe('Client.resumeUpload', () => {
     ).rejects.toThrow('Upload failed');
   });
 });
+describe('Client.updateUpload', () => {
+  let client: UploadxClient;
+
+  beforeEach(() => {
+    client = new UploadxClient({
+      chunkSize: 1024,
+      retryConfig: {
+        retries: 0,
+      },
+    });
+  });
+
+  it('should successfully update upload metadata', async () => {
+    const mockPatch = jest.spyOn(client['client'], 'patch').mockResolvedValue({});
+    const metadata = {
+      name: 'updated.txt',
+      version: '2.0',
+    };
+
+    await client.updateUpload('http://test.com/upload/123', metadata);
+
+    expect(mockPatch).toHaveBeenCalledWith(
+      'http://test.com/upload/123',
+      metadata,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        signal: undefined,
+      },
+    );
+  });
+
+  it('should handle empty metadata update', async () => {
+    const mockPatch = jest.spyOn(client['client'], 'patch').mockResolvedValue({});
+    const metadata = {};
+
+    await client.updateUpload('http://test.com/upload/123', metadata);
+
+    expect(mockPatch).toHaveBeenCalledWith(
+      'http://test.com/upload/123',
+      metadata,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        signal: undefined,
+      },
+    );
+  });
+
+  it('should handle abort signal during metadata update', async () => {
+    const mockPatch = jest.spyOn(client['client'], 'patch').mockResolvedValue({});
+    const abortSignal = new AbortController().signal;
+    const metadata = {
+      name: 'updated.txt',
+    };
+
+    await client.updateUpload('http://test.com/upload/123', metadata, abortSignal);
+
+    expect(mockPatch).toHaveBeenCalledWith(
+      'http://test.com/upload/123',
+      metadata,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        signal: abortSignal,
+      },
+    );
+  });
+
+  it('should throw error with custom message on network failure', async () => {
+    const networkError = new Error('Network error');
+    jest.spyOn(client['client'], 'patch').mockRejectedValue(networkError);
+    const metadata = {
+      name: 'updated.txt',
+    };
+
+    await expect(
+      client.updateUpload('http://test.com/upload/123', metadata),
+    ).rejects.toThrow('Failed to update metadata');
+  });
+
+  it('should handle server errors with appropriate error message', async () => {
+    const serverError = new Error('Internal Server Error');
+    jest.spyOn(client['client'], 'patch').mockRejectedValue(serverError);
+    const metadata = {
+      name: 'updated.txt',
+    };
+
+    await expect(
+      client.updateUpload('http://test.com/upload/123', metadata),
+    ).rejects.toThrow('Failed to update metadata');
+  });
+});
