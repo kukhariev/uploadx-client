@@ -397,7 +397,9 @@ describe('Client.updateUpload', () => {
   });
 
   it('should successfully update upload metadata', async () => {
-    const mockPatch = jest.spyOn(client['client'], 'patch').mockResolvedValue({});
+    const mockPatch = jest
+      .spyOn(client['client'], 'patch')
+      .mockResolvedValue({});
     const metadata = {
       name: 'updated.txt',
       version: '2.0',
@@ -418,7 +420,9 @@ describe('Client.updateUpload', () => {
   });
 
   it('should handle empty metadata update', async () => {
-    const mockPatch = jest.spyOn(client['client'], 'patch').mockResolvedValue({});
+    const mockPatch = jest
+      .spyOn(client['client'], 'patch')
+      .mockResolvedValue({});
     const metadata = {};
 
     await client.updateUpload('http://test.com/upload/123', metadata);
@@ -436,13 +440,19 @@ describe('Client.updateUpload', () => {
   });
 
   it('should handle abort signal during metadata update', async () => {
-    const mockPatch = jest.spyOn(client['client'], 'patch').mockResolvedValue({});
+    const mockPatch = jest
+      .spyOn(client['client'], 'patch')
+      .mockResolvedValue({});
     const abortSignal = new AbortController().signal;
     const metadata = {
       name: 'updated.txt',
     };
 
-    await client.updateUpload('http://test.com/upload/123', metadata, abortSignal);
+    await client.updateUpload(
+      'http://test.com/upload/123',
+      metadata,
+      abortSignal,
+    );
 
     expect(mockPatch).toHaveBeenCalledWith(
       'http://test.com/upload/123',
