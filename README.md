@@ -1,6 +1,7 @@
 # UploadX Client
 
 [![npm version][npm-image]][npm-url]
+
 <!-- [![commits since latest release][comm-image]][comm-url] -->
 
 A JavaScript client for resumable file uploads with chunking support. Works with [node-uploadx](https://github.com/kukhariev/node-uploadx) server implementation.
@@ -119,6 +120,7 @@ async function manualUploadSession() {
   try {
     // Create upload session
     const session = await client.createUpload(
+      // or createFileUpload
       "https://your-server.com/upload",
       metadata
     );
@@ -131,7 +133,6 @@ async function manualUploadSession() {
       console.log(`Resuming upload from byte ${session.uploadedBytes}`);
     }
 
-    // For Node.js file uploads
     await client.resumeFileUpload(
       session.url,
       filePath,
@@ -161,6 +162,7 @@ new UploadxClient(config?: UploadConfig)
 ```
 
 **Parameters:**
+
 - `config` (optional): Configuration options
   - `chunkSize`: Size of each chunk in bytes (default: 5MB)
   - `retryConfig`: Configuration for axios-retry
@@ -236,6 +238,18 @@ createUpload(
 ): Promise<{ url: string; uploadedBytes?: number }>
 ```
 
+##### `updateUpload`
+
+Updates metadata for an existing upload.
+
+```typescript
+updateUpload(
+  url: string,
+  metadata: Partial<UploadMetadata>,
+  signal?: AbortSignal
+): Promise<void>
+```
+
 ##### `getUploadStatus`
 
 Gets the current upload progress from the server.
@@ -283,7 +297,6 @@ interface UploadMetadata {
 ```typescript
 type ProgressCallback = (progress: number) => void;
 ```
-
 
 ## Examples
 
