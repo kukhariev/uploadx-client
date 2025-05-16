@@ -110,9 +110,9 @@ export class UploadxClient {
   /**
    * Deletes an existing upload from the server
    */
-  async deleteUpload(url: string): Promise<void> {
+  async deleteUpload(url: string, signal?: AbortSignal): Promise<void> {
     try {
-      await this.client.delete(url);
+      await this.client.delete(url, { signal });
     } catch (error) {
       this.handleError(error, 'Failed to delete upload');
     }
