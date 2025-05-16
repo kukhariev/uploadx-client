@@ -119,6 +119,27 @@ export class UploadxClient {
   }
 
   /**
+   *
+   * Updates the metadata of an existing upload
+   */
+  async updateUpload(
+    url: string,
+    metadata: Partial<UploadMetadata>,
+    signal?: AbortSignal,
+  ): Promise<void> {
+    try {
+      await this.client.patch(url, metadata, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        signal,
+      });
+    } catch (error) {
+      throw this.handleError(error, 'Failed to update metadata');
+    }
+  }
+
+  /**
    * Creates a new upload session on the server
    */
   async createUpload(
@@ -338,7 +359,6 @@ export class UploadxClient {
       const start = response.uploadedBytes;
       const totalSize = metadata.size;
 
-      // Загружаем файл по чанкам
       await this.uploadFileInChunks(
         url,
         filePath,
