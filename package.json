@@ -41,13 +41,13 @@
     "url": "https://github.com/kukhariev"
   },
   "repository": {
-    "url": "git+https://github.com/kukhariev/node-uploadx.git"
+    "url": "git+https://github.com/kukhariev/uploadx-client.git"
   },
   "engines": {
     "node": ">=18"
   },
   "bugs": {
-    "url": "https://github.com/kukhariev/node-uploadx/issues"
+    "url": "https://github.com/kukhariev/uploadx-client/issues"
   },
   "license": "MIT",
   "workspaces": [
