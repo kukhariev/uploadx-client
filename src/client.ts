@@ -114,7 +114,7 @@ export class UploadxClient {
     try {
       await this.client.delete(url, { signal });
     } catch (error) {
-      this.handleError(error, 'Failed to delete upload');
+      throw this.handleError(error, 'Failed to delete upload');
     }
   }
 
