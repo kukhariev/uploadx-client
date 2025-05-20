@@ -7,8 +7,7 @@ import express from 'express';
 
 const PORT = process.env.PORT || 3002;
 const app = express();
-const uploadDir =
-  process.env.UPLOAD_DIR || `${tmpdir()}/uploadx-client-uploaded/`;
+const uploadDir = process.env.UPLOAD_DIR || `${tmpdir()}/uploadx-client-uploaded/`;
 
 const uploads = uploadx({
   directory: uploadDir,
@@ -18,13 +17,8 @@ const uploads = uploadx({
   logLevel: <LogLevel>process.env.LOG_LEVEL || 'error',
   onComplete: async (file) => {
     console.log('File upload complete: ', file);
-    if (
-      file.metadata?.md5Checksum &&
-      typeof file.metadata.md5Checksum === 'string'
-    ) {
-      const originalMd5Checksum = file.metadata.md5Checksum
-        .trim()
-        .toLowerCase();
+    if (file.metadata?.md5Checksum && typeof file.metadata.md5Checksum === 'string') {
+      const originalMd5Checksum = file.metadata.md5Checksum.trim().toLowerCase();
       const hash = crypto.createHash('md5');
       const stream = fs.createReadStream(path.resolve(uploadDir, file.name));
 

@@ -1,10 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const filePath =
-  process.argv[2] ||
-  process.env.UPLOADX_EXAMPLE_FILE_PATH ||
-  './upload/test.mp4';
+const filePath = process.argv[2] || process.env.UPLOADX_EXAMPLE_FILE_PATH || './upload/test.mp4';
 
 fs.mkdirSync(path.dirname(filePath), { recursive: true });
 
