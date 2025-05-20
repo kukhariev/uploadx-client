@@ -51,7 +51,7 @@
 
         // Create UploadxClient instance
         const uploadClient = new UploadxClient({
-          chunkSize: 256 * 1024 * 1024, // 1MB chunks for demonstration
+          chunkSize: 1024 * 1024, // 1MB chunks for demonstration
           retryConfig: {
             retries: 3,
           },
