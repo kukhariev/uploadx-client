@@ -40,10 +40,11 @@ const uploads = uploadx({
 app.use(express.static(path.join(__dirname, '../lib/browser')));
 app.use(express.static(path.join(__dirname, 'browser')));
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'browser/index.html'));
-});
-
 app.use('/files', uploads);
 
-app.listen(PORT, () => console.log('listening on port:', PORT));
+
+
+app.listen(PORT, () => {
+  console.log('\x1b[32m', `Server is running on port \x1b[34m${PORT}\x1b[0m`, '\x1b[0m');
+  console.log('\x1b[32m', `For web client demo, open \x1b[34mhttp://localhost:${PORT}/index.html\x1b[0m`, '\x1b[0m');
+});
