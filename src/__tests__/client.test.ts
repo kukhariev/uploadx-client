@@ -220,9 +220,7 @@ describe('Client.getUploadStatus', () => {
     const networkError = new Error('Network error');
     jest.spyOn(client['client'], 'put').mockRejectedValue(networkError);
 
-    await expect(
-      client.getUploadStatus('http://test.com/upload/123'),
-    ).rejects.toThrow();
+    await expect(client.getUploadStatus('http://test.com/upload/123')).rejects.toThrow();
   });
 });
 describe('Client.resumeUpload', () => {
@@ -238,11 +236,9 @@ describe('Client.resumeUpload', () => {
   });
 
   it('should resume upload for Blob data', async () => {
-    const mockGetStatus = jest
-      .spyOn(client, 'getUploadStatus')
-      .mockResolvedValue({
-        uploadedBytes: 512,
-      });
+    const mockGetStatus = jest.spyOn(client, 'getUploadStatus').mockResolvedValue({
+      uploadedBytes: 512,
+    });
 
     const mockUploadBlob = jest
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -257,34 +253,16 @@ describe('Client.resumeUpload', () => {
     };
     const progressCallback = jest.fn();
 
-    await client.resumeUpload(
-      'http://test.com/upload/123',
-      blob,
-      metadata,
-      progressCallback,
-    );
+    await client.resumeUpload('http://test.com/upload/123', blob, metadata, progressCallback);
 
-    expect(mockGetStatus).toHaveBeenCalledWith(
-      'http://test.com/upload/123',
-      metadata,
-      undefined,
-    );
-    expect(mockUploadBlob).toHaveBeenCalledWith(
-      'http://test.com/upload/123',
-      blob,
-      512,
-      2048,
-      progressCallback,
-      undefined,
-    );
+    expect(mockGetStatus).toHaveBeenCalledWith('http://test.com/upload/123', metadata, undefined);
+    expect(mockUploadBlob).toHaveBeenCalledWith('http://test.com/upload/123', blob, 512, 2048, progressCallback, undefined);
   });
 
   it('should resume upload for ReadableStream data', async () => {
-    const mockGetStatus = jest
-      .spyOn(client, 'getUploadStatus')
-      .mockResolvedValue({
-        uploadedBytes: 256,
-      });
+    const mockGetStatus = jest.spyOn(client, 'getUploadStatus').mockResolvedValue({
+      uploadedBytes: 256,
+    });
     const mockUploadStream = jest
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       .spyOn(client as any, 'uploadStreamInChunks')
@@ -299,22 +277,13 @@ describe('Client.resumeUpload', () => {
     await client.resumeUpload('http://test.com/upload/123', stream, metadata);
 
     expect(mockGetStatus).toHaveBeenCalled();
-    expect(mockUploadStream).toHaveBeenCalledWith(
-      'http://test.com/upload/123',
-      stream,
-      256,
-      1024,
-      undefined,
-      undefined,
-    );
+    expect(mockUploadStream).toHaveBeenCalledWith('http://test.com/upload/123', stream, 256, 1024, undefined, undefined);
   });
 
   it('should resume upload for Buffer data', async () => {
-    const mockGetStatus = jest
-      .spyOn(client, 'getUploadStatus')
-      .mockResolvedValue({
-        uploadedBytes: 0,
-      });
+    const mockGetStatus = jest.spyOn(client, 'getUploadStatus').mockResolvedValue({
+      uploadedBytes: 0,
+    });
     const mockUploadBuffer = jest
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       .spyOn(client as any, 'uploadBufferInChunks')
@@ -329,59 +298,32 @@ describe('Client.resumeUpload', () => {
     await client.resumeUpload('http://test.com/upload/123', buffer, metadata);
 
     expect(mockGetStatus).toHaveBeenCalled();
-    expect(mockUploadBuffer).toHaveBeenCalledWith(
-      'http://test.com/upload/123',
-      buffer,
-      0,
-      1024,
-      undefined,
-      undefined,
-    );
+    expect(mockUploadBuffer).toHaveBeenCalledWith('http://test.com/upload/123', buffer, 0, 1024, undefined, undefined);
   });
 
   it('should handle abort signal gracefully', async () => {
     const abortController = new AbortController();
-    const mockGetStatus = jest
-      .spyOn(client, 'getUploadStatus')
-      .mockRejectedValue(new AbortError());
+    const mockGetStatus = jest.spyOn(client, 'getUploadStatus').mockRejectedValue(new AbortError());
     const metadata = {
       name: 'test.txt',
       mimeType: 'text/plain',
       size: 1024,
     };
 
-    await client.resumeUpload(
-      'http://test.com/upload/123',
-      Buffer.from('test'),
-      metadata,
-      undefined,
-      abortController.signal,
-    );
+    await client.resumeUpload('http://test.com/upload/123', Buffer.from('test'), metadata, undefined, abortController.signal);
 
-    expect(mockGetStatus).toHaveBeenCalledWith(
-      'http://test.com/upload/123',
-      metadata,
-      abortController.signal,
-    );
+    expect(mockGetStatus).toHaveBeenCalledWith('http://test.com/upload/123', metadata, abortController.signal);
   });
 
   it('should throw error for upload failures', async () => {
-    const mockGetStatus = jest
-      .spyOn(client, 'getUploadStatus')
-      .mockRejectedValue(new Error('Network error'));
+    const mockGetStatus = jest.spyOn(client, 'getUploadStatus').mockRejectedValue(new Error('Network error'));
     const metadata = {
       name: 'test.txt',
       mimeType: 'text/plain',
       size: 1024,
     };
 
-    await expect(
-      client.resumeUpload(
-        'http://test.com/upload/123',
-        Buffer.from('test'),
-        metadata,
-      ),
-    ).rejects.toThrow('Upload failed');
+    await expect(client.resumeUpload('http://test.com/upload/123', Buffer.from('test'), metadata)).rejects.toThrow('Upload failed');
   });
 });
 describe('Client.updateUpload', () => {
@@ -397,9 +339,7 @@ describe('Client.updateUpload', () => {
   });
 
   it('should successfully update upload metadata', async () => {
-    const mockPatch = jest
-      .spyOn(client['client'], 'patch')
-      .mockResolvedValue({});
+    const mockPatch = jest.spyOn(client['client'], 'patch').mockResolvedValue({});
     const metadata = {
       name: 'updated.txt',
       version: '2.0',
@@ -407,63 +347,43 @@ describe('Client.updateUpload', () => {
 
     await client.updateUpload('http://test.com/upload/123', metadata);
 
-    expect(mockPatch).toHaveBeenCalledWith(
-      'http://test.com/upload/123',
-      metadata,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        signal: undefined,
+    expect(mockPatch).toHaveBeenCalledWith('http://test.com/upload/123', metadata, {
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      signal: undefined,
+    });
   });
 
   it('should handle empty metadata update', async () => {
-    const mockPatch = jest
-      .spyOn(client['client'], 'patch')
-      .mockResolvedValue({});
+    const mockPatch = jest.spyOn(client['client'], 'patch').mockResolvedValue({});
     const metadata = {};
 
     await client.updateUpload('http://test.com/upload/123', metadata);
 
-    expect(mockPatch).toHaveBeenCalledWith(
-      'http://test.com/upload/123',
-      metadata,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        signal: undefined,
+    expect(mockPatch).toHaveBeenCalledWith('http://test.com/upload/123', metadata, {
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      signal: undefined,
+    });
   });
 
   it('should handle abort signal during metadata update', async () => {
-    const mockPatch = jest
-      .spyOn(client['client'], 'patch')
-      .mockResolvedValue({});
+    const mockPatch = jest.spyOn(client['client'], 'patch').mockResolvedValue({});
     const abortSignal = new AbortController().signal;
     const metadata = {
       name: 'updated.txt',
     };
 
-    await client.updateUpload(
-      'http://test.com/upload/123',
-      metadata,
-      abortSignal,
-    );
+    await client.updateUpload('http://test.com/upload/123', metadata, abortSignal);
 
-    expect(mockPatch).toHaveBeenCalledWith(
-      'http://test.com/upload/123',
-      metadata,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        signal: abortSignal,
+    expect(mockPatch).toHaveBeenCalledWith('http://test.com/upload/123', metadata, {
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      signal: abortSignal,
+    });
   });
 
   it('should throw error with custom message on network failure', async () => {
@@ -473,9 +393,7 @@ describe('Client.updateUpload', () => {
       name: 'updated.txt',
     };
 
-    await expect(
-      client.updateUpload('http://test.com/upload/123', metadata),
-    ).rejects.toThrow('Failed to update metadata');
+    await expect(client.updateUpload('http://test.com/upload/123', metadata)).rejects.toThrow('Failed to update metadata');
   });
 
   it('should handle server errors with appropriate error message', async () => {
@@ -485,8 +403,6 @@ describe('Client.updateUpload', () => {
       name: 'updated.txt',
     };
 
-    await expect(
-      client.updateUpload('http://test.com/upload/123', metadata),
-    ).rejects.toThrow('Failed to update metadata');
+    await expect(client.updateUpload('http://test.com/upload/123', metadata)).rejects.toThrow('Failed to update metadata');
   });
 });
