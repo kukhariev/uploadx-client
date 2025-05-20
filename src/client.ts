@@ -245,38 +245,14 @@ export class UploadxClient {
     signal?: AbortSignal,
   ): Promise<void> {
     try {
-      const session = await this.createUpload(endpoint, metadata, signal);
-      const start = session.uploadedBytes || 0;
+      const { url, uploadedBytes } = await this.createUpload(
+        endpoint,
+        metadata,
+        signal,
+      );
+      const start = uploadedBytes || 0;
       const totalSize = metadata.size;
-
-      if (this.isBlob(data)) {
-        await this.uploadBlobInChunks(
-          session.url,
-          data,
-          start,
-          totalSize,
-          onProgress,
-          signal,
-        );
-      } else if (this.isStream(data)) {
-        await this.uploadStreamInChunks(
-          session.url,
-          data,
-          start,
-          totalSize,
-          onProgress,
-          signal,
-        );
-      } else {
-        await this.uploadBufferInChunks(
-          session.url,
-          data,
-          start,
-          totalSize,
-          onProgress,
-          signal,
-        );
-      }
+      await this.uploadDataInChunks(data, url, start, totalSize, onProgress, signal);
     } catch (error) {
       // Don't throw if the operation was aborted
       if (error instanceof AbortError) {
@@ -301,35 +277,7 @@ export class UploadxClient {
       const response = await this.getUploadStatus(url, metadata, signal);
       const start = response.uploadedBytes;
       const totalSize = metadata.size;
-
-      if (this.isBlob(data)) {
-        await this.uploadBlobInChunks(
-          url,
-          data,
-          start,
-          totalSize,
-          onProgress,
-          signal,
-        );
-      } else if (this.isStream(data)) {
-        await this.uploadStreamInChunks(
-          url,
-          data,
-          start,
-          totalSize,
-          onProgress,
-          signal,
-        );
-      } else {
-        await this.uploadBufferInChunks(
-          url,
-          data,
-          start,
-          totalSize,
-          onProgress,
-          signal,
-        );
-      }
+      await this.uploadDataInChunks(data, url, start, totalSize, onProgress, signal);
     } catch (error) {
       // Don't throw if the operation was aborted
       if (error instanceof AbortError) {
@@ -430,6 +378,44 @@ export class UploadxClient {
     const uploadedBytes = this.parseRangeHeader(rangeHeader);
 
     return { uploadedBytes };
+  }
+
+  private async uploadDataInChunks(
+    data: Uploadable,
+    url: string,
+    start: number,
+    totalSize: number,
+    onProgress: ProgressCallback | undefined,
+    signal: AbortSignal | undefined,
+  ) {
+    if (this.isBlob(data)) {
+      await this.uploadBlobInChunks(
+        url,
+        data,
+        start,
+        totalSize,
+        onProgress,
+        signal,
+      );
+    } else if (this.isStream(data)) {
+      await this.uploadStreamInChunks(
+        url,
+        data,
+        start,
+        totalSize,
+        onProgress,
+        signal,
+      );
+    } else {
+      await this.uploadBufferInChunks(
+        url,
+        data,
+        start,
+        totalSize,
+        onProgress,
+        signal,
+      );
+    }
   }
 
   private async uploadFileInChunks(
