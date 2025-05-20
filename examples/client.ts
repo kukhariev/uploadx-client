@@ -36,10 +36,7 @@ async function main() {
   const endpoint = process.env.UPLOADX_ENDPOINT || 'http://localhost:3002/files';
 
   const filePath = process.argv[2] || process.env.UPLOADX_EXAMPLE_FILE_PATH || './upload/test.mp4';
-  if (!filePath) {
-    console.error('Please provide a file path as an argument or set the UPLOADX_EXAMPLE_FILE_PATH environment variable.');
-    process.exit(1);
-  }
+
   // Check if a file path was provided and if it exists
   if (!fs.existsSync(filePath)) {
     console.error(`File not found: ${filePath}`);
