@@ -15,22 +15,19 @@ async function calculateMD5(filePath: string): Promise<string> {
   });
 }
 
-// Function to get MIME type based on file extension
+// Get MIME type based on file extension
+const mimeMap = {
+  'jpg': 'image/jpeg',
+  'jpeg': 'image/jpeg',
+  'png': 'image/png',
+  'mp4': 'video/mp4',
+} as { [key: string]: string };
+
 function getMimeType(filePath: string): string {
-  const ext = extname(filePath).toLowerCase();
-  switch (ext) {
-    case 'jpg':
-    case 'jpeg':
-      return 'image/jpeg';
-    case 'png':
-      return 'image/png';
-    case 'mp4':
-      return 'video/mp4';
-    // Add more cases for other file types
-    default:
-      return 'application/octet-stream';
-  }
+  const ext = extname(filePath).toLowerCase().slice(1);
+  return mimeMap[ext] || 'application/octet-stream';
 }
+
 
 async function main() {
   const endpoint = process.env.UPLOADX_ENDPOINT || 'http://localhost:3002/files';
