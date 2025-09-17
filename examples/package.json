@@ -5,6 +5,7 @@
   "scripts": {
     "server": "tsnd -r tsconfig-paths/register -r dotenv/config server",
     "client": "tsnd -r tsconfig-paths/register -r dotenv/config client",
+    "file-upload": "tsnd -r tsconfig-paths/register -r dotenv/config file-upload",
     "create-sample-file": "tsnd -r dotenv/config examples/sample-file.ts",
     "clean": "rimraf ./upload/"
   },
