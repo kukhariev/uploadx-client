@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { ERRORS, type LogLevel, fail, uploadx } from '@uploadx/core';
+import { ERRORS, fail, type LogLevel, uploadx } from '@uploadx/core';
 import express from 'express';
 
 const PORT = process.env.PORT || 3002;
@@ -41,8 +41,6 @@ app.use(express.static(path.join(__dirname, '../lib/browser')));
 app.use(express.static(path.join(__dirname, 'browser')));
 
 app.use('/files', uploads);
-
-
 
 app.listen(PORT, () => {
   console.log('\x1b[32m', `Server is running on port \x1b[34m${PORT}\x1b[0m`, '\x1b[0m');
