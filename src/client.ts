@@ -1,7 +1,7 @@
 import axios, { type AxiosError, type AxiosInstance, type AxiosRequestConfig } from 'axios';
-import axiosRetry, { type IAxiosRetryConfig, exponentialDelay } from 'axios-retry';
+import axiosRetry, { exponentialDelay, type IAxiosRetryConfig } from 'axios-retry';
 
-export type Uploadable = File | Blob | NodeJS.ReadableStream | ArrayBuffer | Uint8Array;
+export type Uploadable = File | Blob | NodeJS.ReadableStream | ArrayBuffer | Uint8Array<ArrayBuffer>;
 
 /**
  * Represents metadata for upload operations
@@ -421,7 +421,6 @@ export class UploadxClient {
     let chunksSize = 0;
 
     return new Promise((resolve, reject) => {
-      // Set up abort handler
       const abortHandler: () => void = () => {
         reject(new AbortError());
       };
@@ -446,12 +445,11 @@ export class UploadxClient {
           stream.pause();
 
           this.uploadChunk(url, chunkBuffer.slice(0, end - position), position, end, totalSize, onProgress, signal)
-            .then((range) => {
+            .then(() => {
               position = end;
               stream.resume();
             })
             .catch((error) => {
-              // stream.destroy(error);
               reject(error);
             });
         }
@@ -462,8 +460,7 @@ export class UploadxClient {
           signal.removeEventListener('abort', abortHandler);
         }
 
-        if (chunks.length > 0) {
-          // Check if the operation was aborted
+        if (chunks.length > 0 && position < totalSize) {
           if (signal?.aborted) {
             reject(new AbortError());
             return;
@@ -474,7 +471,7 @@ export class UploadxClient {
 
           try {
             await this.uploadChunk(url, chunkBuffer, position, end, totalSize, onProgress, signal);
-            position += chunksSize;
+            position = end;
           } catch (error) {
             reject(error);
             return;

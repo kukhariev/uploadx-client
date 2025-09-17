@@ -1,7 +1,6 @@
 import { UploadxClient } from './client.js';
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny:  make public
 (window as any).UploadxClient = UploadxClient;
 
-// Экспортируем только по умолчанию для UMD
 export default UploadxClient;
