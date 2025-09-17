@@ -241,7 +241,7 @@ describe('Client.resumeUpload', () => {
     });
 
     const mockUploadBlob = jest
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      // biome-ignore lint/suspicious/noExplicitAny: access to private method
       .spyOn(client as any, 'uploadBlobInChunks')
       .mockResolvedValue(undefined);
     const blob = new Blob(['test data'], { type: 'text/plain' });
@@ -264,7 +264,7 @@ describe('Client.resumeUpload', () => {
       uploadedBytes: 256,
     });
     const mockUploadStream = jest
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      // biome-ignore lint/suspicious/noExplicitAny: access to private method
       .spyOn(client as any, 'uploadStreamInChunks')
       .mockResolvedValue(undefined);
     const stream = new Readable({ read() {} });
@@ -285,7 +285,7 @@ describe('Client.resumeUpload', () => {
       uploadedBytes: 0,
     });
     const mockUploadBuffer = jest
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      // biome-ignore lint/suspicious/noExplicitAny: access to private method
       .spyOn(client as any, 'uploadBufferInChunks')
       .mockResolvedValue(undefined);
     const buffer = Buffer.from('test data');
@@ -316,7 +316,7 @@ describe('Client.resumeUpload', () => {
   });
 
   it('should throw error for upload failures', async () => {
-    const mockGetStatus = jest.spyOn(client, 'getUploadStatus').mockRejectedValue(new Error('Network error'));
+    jest.spyOn(client, 'getUploadStatus').mockRejectedValue(new Error('Network error'));
     const metadata = {
       name: 'test.txt',
       mimeType: 'text/plain',
