@@ -1,6 +1,6 @@
 {
   "name": "@uploadx/client",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Resumable upload client for browser and Node.js",
   "type": "commonjs",
   "main": "lib/index.js",
