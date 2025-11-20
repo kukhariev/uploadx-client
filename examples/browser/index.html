@@ -121,7 +121,7 @@
               resumeBtn.disabled = false;
             } else {
               updateStatus(`Error: ${error.message}`, "error");
-              resumeBtn.disabled = sessionUrl ? false : true;
+              resumeBtn.disabled = !sessionUrl;
             }
           }
         });
@@ -211,7 +211,7 @@
 
         function updateStatus(message, status) {
           statusText.textContent = message;
-          statusText.className = "status status-" + status;
+          statusText.className = `status·status-${status}`;
         }
       });
     </script>
