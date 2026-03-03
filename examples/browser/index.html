@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -17,10 +17,18 @@
         accept="video/*,image/*,application/pdf"
       />
       <div class="button-group">
-        <button id="uploadBtn" class="btn upload-btn">Upload</button>
-        <button id="abortBtn" class="btn abort-btn" disabled>Abort</button>
-        <button id="resumeBtn" class="btn resume-btn" disabled>Resume</button>
-        <button id="deleteBtn" class="btn delete-btn" disabled>Delete</button>
+        <button id="uploadBtn" type="button" class="btn upload-btn">
+          Upload
+        </button>
+        <button id="abortBtn" type="button" class="btn abort-btn" disabled>
+          Abort
+        </button>
+        <button id="resumeBtn" type="button" class="btn resume-btn" disabled>
+          Resume
+        </button>
+        <button id="deleteBtn" type="button" class="btn delete-btn" disabled>
+          Delete
+        </button>
       </div>
       <div class="progress-container">
         <div class="progress-bar" id="progressBar"></div>
@@ -95,7 +103,7 @@
             // Create upload session
             const session = await uploadClient.createUpload(
               UPLOADX_ENDPOINT,
-              metadata
+              metadata,
             );
             sessionUrl = session.url;
 
@@ -107,7 +115,7 @@
               selectedFile,
               metadata,
               updateProgress,
-              abortController.signal
+              abortController.signal,
             );
 
             // Update UI after successful upload
@@ -160,7 +168,7 @@
               selectedFile,
               metadata,
               updateProgress,
-              abortController.signal
+              abortController.signal,
             );
 
             // Update UI after successful upload
