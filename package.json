@@ -54,7 +54,7 @@
     "examples"
   ],
   "dependencies": {
-    "axios": "^1.13.2",
+    "axios": "^1.13.6",
     "axios-retry": "^4.5.0"
   },
   "devDependencies": {
